@@ -4,6 +4,7 @@ import os
 
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np
 import torch
 from PIL import Image as pil
 from torchvision import transforms
@@ -84,8 +85,6 @@ def process_and_plot(image_paths):
 
     return diff
 
-
-import numpy as np
 
 if __name__ == "__main__":
     # Обробка та візуалізація для одного зображення
