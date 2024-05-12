@@ -15,3 +15,7 @@ for result in results:
     # obb = result.obb
     # result.show()
     print([asarray(boxes.xywh).astype(int) for boxes in result.boxes])
+
+
+def get_boxes(yolo_model, image_path):
+    return [asarray(boxes.xywh).astype(int) for boxes in yolo_model(image_path)[0].boxes]
