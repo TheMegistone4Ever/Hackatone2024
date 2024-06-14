@@ -1,0 +1,11 @@
+numpy~=1.26.4
+matplotlib~=3.8.4
+ultralytics~=8.2.13
+opencv-python~=4.9.0.80
+torch~=2.3.0
+pillow~=10.3.0
+torchvision~=0.18.0
+joblib~=1.4.2
+scikit-learn~=1.4.2
+six~=1.16.0
+tensorboardX~=1.4

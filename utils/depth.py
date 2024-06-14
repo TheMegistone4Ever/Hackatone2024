@@ -14,8 +14,8 @@ from monodepth2.utils import download_model_if_doesnt_exist
 
 model_name = "mono+stereo_640x192"
 download_model_if_doesnt_exist(model_name)
-encoder_path = os.path.join("models", model_name, "encoder.pth")
-depth_decoder_path = os.path.join("models", model_name, "depth.pth")
+encoder_path = os.path.join("../models", model_name, "encoder.pth")
+depth_decoder_path = os.path.join("../models", model_name, "depth.pth")
 
 
 # Завантаження моделі
@@ -38,14 +38,12 @@ def load_model():
 encoder, depth_decoder = load_model()
 
 
-def process_and_plot(image_paths):
-    plt.figure(figsize=(15, 15))
+def process_and_plot(image_paths, feed_width=640, feed_height=192):
+    plt.figure(figsize=(12, 20), dpi=200)
     depths = []
     for idx, image_path in enumerate(image_paths, start=1):
-        input_image = pil.open
         input_image = pil.open(image_path).convert('RGB')
         original_width, original_height = input_image.size
-        feed_width, feed_height = 640, 192
         input_image_resized = input_image.resize((feed_width, feed_height), pil.LANCZOS)
         input_image_pytorch = transforms.ToTensor()(input_image_resized).unsqueeze(0)
 
@@ -62,23 +60,24 @@ def process_and_plot(image_paths):
         depth_resized_np = depth_resized.squeeze().cpu().numpy()
         disparity_resized_np = disp.squeeze().cpu().numpy()
 
-        disparity_resized_np = cv2.resize(disparity_resized_np, (feed_width, 400))
+        disparity_resized_np = cv2.resize(disparity_resized_np, (feed_width, 500))
         depth_resized_np = cv2.resize(depth_resized_np, (feed_width, 500))
         depths.append(depth_resized_np)
 
-        plt.subplot(3, len(image_paths), idx)
+        plt.subplot(3, 2, idx * 2 - 1)
         plt.imshow(depth_resized_np, cmap='plasma')
         plt.title(f"Depth estimation for {os.path.basename(image_path)}")
         plt.axis('off')
 
-        plt.subplot(3, len(image_paths), idx + len(image_paths))
+        plt.subplot(3, 2, idx * 2)
         plt.imshow(disparity_resized_np, cmap='plasma')
         plt.title(f"Disparity estimation for {os.path.basename(image_path)}")
         plt.axis('off')
 
     diff = abs(depths[0] - depths[1])
-    print(diff)
-    plt.subplot(3, 3, 7)
+    diff = cv2.resize(diff, (feed_width * 2, 1000))
+
+    plt.subplot(3, 1, 3)
     plt.imshow(diff, cmap='plasma')
     plt.title("Difference between depths")
     plt.axis('off')
